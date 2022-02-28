@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Paasify/paasify/issues"
   },
-  "homepage": "https://github.com/Paasify/paasify#readme"
+  "homepage": "https://github.com/Paasify/paasify#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
 }
