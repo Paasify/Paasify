@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Paasify/paasify#readme",
   "dependencies": {
+    "body-parser": "^1.19.2",
     "express": "^4.17.3"
   }
 }
