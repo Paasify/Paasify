@@ -1,3 +1,7 @@
+# Turbo and other stuff
+.turbo
+.DS_Store
+
 # Logs
 logs
 *.log
