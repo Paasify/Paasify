@@ -10,12 +10,15 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{js,jsx,md}\""
+    "format": "prettier --write \"**/*.{js,jsx,md}\"",
+    "prepare": "husky install"
   },
   "devDependencies": {
-    "turbo": "latest",
     "eslint": "^8.19.0",
-    "prettier": "latest"
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "latest",
+    "turbo": "latest"
   },
   "engines": {
     "npm": ">=8.5.0",
@@ -29,5 +32,9 @@
   "bugs": {
     "url": "https://github.com/Paasify/paasify/issues"
   },
-  "homepage": "https://github.com/Paasify/paasify#readme"
+  "homepage": "https://github.com/Paasify/paasify#readme",
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,jsx,md}": "prettier --write"
+  }
 }
