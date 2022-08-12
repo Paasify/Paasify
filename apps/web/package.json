@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.7",
     "next": "12.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "styled-components": "^5.3.5"
+    "react-hook-form": "^7.34.0",
+    "styled-components": "^5.3.5",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "eslint": "8.20.0",
