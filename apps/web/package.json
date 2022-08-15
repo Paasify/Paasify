@@ -20,5 +20,8 @@
   "devDependencies": {
     "eslint": "8.20.0",
     "eslint-config-next": "12.2.2"
+  },
+  "resolutions": {
+    "styled-components": "^5"
   }
 }
