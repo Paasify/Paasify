@@ -1,18 +1,73 @@
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Head from 'next/head'
+import { login } from '../utils/auth'
+import { Cookies } from 'react-cookie'
+import axios from 'axios'
+
+const cookies = new Cookies()
 
 export default function Login() {
+  const [token, setToken] = useState(cookies.get('token') || null)
+  const [error, setError] = useState('')
+  const [email, setEmail] = useState(null)
+  const [password, setPassword] = useState(null)
+  // const [inputName, setInputName] = useState()
+
+  const onEmailChange = (e) => {
+    setEmail(e.target.value)
+  }
+  const onPasswordChange = (e) => {
+    setPassword(e.target.value)
+  }
+
+  const onLoginClick = async (e) => {
+    e.preventDefault()
+    try {
+      const url = `${process.env.API_URL}/api/users/login`
+      const response = await axios.post(url, {
+        email,
+        password,
+      })
+      const { token } = response.data
+      await login({ token })
+      setToken(token)
+      setError(null)
+    } catch (error) {
+      console.error(
+        'You have an error in your code or there are network issue.',
+        error
+      )
+      setError(error.message)
+    }
+  }
+
+  // useEffect(() => {
+
+  // })
   return (
     <LoginWrapper>
       <Head>
         <title>Login | Paasify</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <LoginForm method="post">
+      <LoginForm onSubmit={(e) => onLoginClick(e)}>
         <Title>Login to Paasify</Title>
-        <Input name="email" placeholder="Email" type="email" />
-        <Input name="password" placeholder="Password" type="password" />
+        <Input
+          name="email"
+          placeholder="Email"
+          type="email"
+          onChange={(e) => onEmailChange(e)}
+        />
+        <Input
+          name="password"
+          placeholder="Password"
+          type="password"
+          onChange={(e) => onPasswordChange(e)}
+        />
         <Button>Continue</Button>
+        {error && <p>Error: ${error}</p>}
+        {token && <p>Token: {token}</p>}
         <ForgotPassword>Forgot password?</ForgotPassword>
       </LoginForm>
     </LoginWrapper>

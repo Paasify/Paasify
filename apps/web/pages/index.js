@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { handleAuthSSR } from '../utils/auth'
 
 export default function Home() {
   return (
@@ -66,4 +67,9 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+Home.getInitialProps = async (ctx) => {
+  await handleAuthSSR(ctx)
+  return {}
 }
