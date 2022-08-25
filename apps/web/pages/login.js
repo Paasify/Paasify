@@ -4,43 +4,74 @@ import Head from 'next/head'
 import { login } from '../utils/auth'
 import { Cookies } from 'react-cookie'
 import axios from 'axios'
+import { useForm } from 'react-hook-form'
 
 const cookies = new Cookies()
 
-export default function Login() {
+export default function Login({ API_URL }) {
+  const url = `${API_URL}/api/users/login`
+
+  // email, password, token, error states
   const [token, setToken] = useState(cookies.get('token') || null)
   const [error, setError] = useState('')
   const [email, setEmail] = useState(null)
   const [password, setPassword] = useState(null)
-  // const [inputName, setInputName] = useState()
 
-  const onEmailChange = (e) => {
-    setEmail(e.target.value)
-  }
-  const onPasswordChange = (e) => {
-    setPassword(e.target.value)
-  }
+  // react hook form
+  const {
+    loginForm,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
 
-  const onLoginClick = async (e) => {
-    e.preventDefault()
-    try {
-      const url = `${process.env.API_URL}/api/users/login`
-      const response = await axios.post(url, {
-        email,
-        password,
-      })
+  // if react hook form is fine then send data to server
+  const onSubmit = async (data) => {
+    const { email, password } = data
+
+    // send data to server to check if the user is valid
+    const response = await axios.post(url, {
+      email,
+      password,
+    })
+
+    // if the user is valid then set the token in the cookie
+    if (response.data.token) {
       const { token } = response.data
       await login({ token })
       setToken(token)
       setError(null)
-    } catch (error) {
-      console.error(
-        'You have an error in your code or there are network issue.',
-        error
-      )
+    } else {
       setError(error.message)
     }
   }
+
+  // const onEmailChange = (e) => {
+  //   setEmail(e.target.value)
+  // }
+  // const onPasswordChange = (e) => {
+  //   setPassword(e.target.value)
+  // }
+
+  // const onLoginClick = async (e) => {
+  //   e.preventDefault()
+  //   try {
+  //     const url = `${API_URL}/api/users/login`
+  //     const response = await axios.post(url, {
+  //       email,
+  //       password,
+  //     })
+  //     const { token } = response.data
+  //     await login({ token })
+  //     setToken(token)
+  //     setError(null)
+  //   } catch (error) {
+  //     console.error(
+  //       'You have an error in your code or there are network issue.',
+  //       error
+  //     )
+  //     setError(error.message)
+  //   }
+  // }
 
   // useEffect(() => {
 
@@ -51,19 +82,19 @@ export default function Login() {
         <title>Login | Paasify</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <LoginForm onSubmit={(e) => onLoginClick(e)}>
+      <LoginForm method="post" onSubmit={handleSubmit(onSubmit)}>
         <Title>Login to Paasify</Title>
         <Input
           name="email"
           placeholder="Email"
           type="email"
-          onChange={(e) => onEmailChange(e)}
+          // onChange={(e) => onEmailChange(e)}
         />
         <Input
           name="password"
           placeholder="Password"
           type="password"
-          onChange={(e) => onPasswordChange(e)}
+          // onChange={(e) => onPasswordChange(e)}
         />
         <Button>Continue</Button>
         {error && <p>Error: ${error}</p>}
@@ -72,6 +103,10 @@ export default function Login() {
       </LoginForm>
     </LoginWrapper>
   )
+}
+
+Login.getInitialProps = async (ctx) => {
+  return { API_URL: process.env.API_URL }
 }
 
 const LoginWrapper = styled.div`
