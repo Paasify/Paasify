@@ -2,6 +2,7 @@ const Authentication = require('../utils/authentication')
 var express = require('express')
 var router = express.Router()
 const passport = require('passport')
+require('../utils/passport')
 // const handlers = require('../utils/handlers');
 
 const requireAuth = passport.authenticate('jwt', {

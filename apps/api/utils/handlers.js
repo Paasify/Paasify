@@ -1,16 +1,29 @@
 const { PrismaClient } = require('@prisma/client')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 const prisma = new PrismaClient()
 
+/**
+ *
+ * @param {string} username Username of the user.
+ * @returns
+ */
 async function getUserWithUsername(username) {
-  return await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       username: username,
     },
   })
+  if (user !== null) {
+    return user
+  }
 }
 
+/**
+ *
+ * @param {string} id id of the user.
+ * @returns
+ */
 async function getUserWithId(id) {
   return await prisma.User.findUnique({
     where: {
@@ -23,6 +36,12 @@ async function getUserWithId(id) {
   })
 }
 
+/**
+ *
+ * @param {string} username Username of the user.
+ * @param {string} password Password of the user.
+ * @returns
+ */
 async function verifyUserLogin(username, password) {
   const user = await getUserWithUsername(username)
   if (!user) {
@@ -47,33 +66,73 @@ async function verifyUserLogin(username, password) {
  * @returns
  */
 async function createUser(username, email, password) {
-  let hashPass = ''
+  console.log(`username: ${username}, email: ${email}, password: ${password}`)
+  // let hashPass = ''
   const user = await getUserWithUsername(username)
+  console.log('getUserWithUsername ran:', user)
   if (user) {
+    console.log('user already exists')
     return { userCreated: false, status: false, error: 'User already exists' }
   }
-  const hashedPassword = bcrypt.genSalt(10, function (err, salt) {
-    if (err) {
-      return { userCreated: false, status: false, error: err }
-    }
-    bcrypt.hash(password, salt, null, async function (err, hash) {
-      if (err) {
-        return { userCreate: false, status: false, error: err }
-      }
-
-      hashPass = hash
-      await prisma.User.create({
-        data: {
-          username,
-          email,
-          password: hashPass,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      })
-      return { userCreated: true, status: true, error: false }
-    })
+  const generatedSalt = await bcrypt.genSalt(10)
+  const generatedHash = await bcrypt.hash(password, generatedSalt)
+  // console.log(generatedSalt, generatedHash)
+  await prisma.user.create({
+    data: {
+      username: username,
+      email: email,
+      password: generatedHash,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
   })
+  return { userCreated: true, status: true, error: false }
+
+  //   , null, async function (err, hash) {
+  //     if (err) {
+  //       return { userCreate: false, status: false, error: err }
+  //     }
+
+  //     hashPass = hash
+  //     await prisma.User.create({
+  //       data: {
+  //         username,
+  //         email,
+  //         password: hashPass,
+  //         createdAt: new Date(),
+  //         updatedAt: new Date(),
+  //       },
+  //     })
+  //     return { userCreated: true, status: true, error: false }
+  //   })
+  // }).catch((err) => {
+  //   console.log('err: ', err)
+  //   return { userCreated: false, status: false, error: err }
+  // })
+
+  // , function (err, salt) {
+  //   console.log('salt: ', salt)
+  //   if (err) {
+  //     return { userCreated: false, status: false, error: err }
+  //   }
+  //   bcrypt.hash(password, salt, null, async function (err, hash) {
+  //     if (err) {
+  //       return { userCreate: false, status: false, error: err }
+  //     }
+
+  //     hashPass = hash
+  //     await prisma.User.create({
+  //       data: {
+  //         username,
+  //         email,
+  //         password: hashPass,
+  //         createdAt: new Date(),
+  //         updatedAt: new Date(),
+  //       },
+  //     })
+  //     return { userCreated: true, status: true, error: false }
+  //   })
+  // })
 }
 
 module.exports = {

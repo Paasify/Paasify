@@ -3,7 +3,7 @@ const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
 const LocalStrategy = require('passport-local')
 // const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const handlers = require('./handlers')
 
 // const Prisma = new PrismaClient();
