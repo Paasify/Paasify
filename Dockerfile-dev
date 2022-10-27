@@ -1,0 +1,34 @@
+ARG NODE_VERSION=16.15.1
+ARG YARN_VERSION=1.22.19
+
+# For building
+FROM node:${NODE_VERSION}-slim AS build
+
+WORKDIR /app
+
+RUN apt update && apt -y install curl
+RUN npm --no-update-notifier --no-fund --global install yarn@${YARN_VERSION}
+
+COPY . .
+RUN yarn install
+RUN yarn build
+
+# Production build
+FROM node:${NODE_VERSION}-slim
+
+WORKDIR /app
+ENV NODE_ENV production
+ARG TARGETPLATFORM
+
+ARG DOCKER_VERSION=20.10.18
+ARG DOCKER_COMPOSE_VERSION=2.11.2
+ARG PACK_VERSION=v0.27.0
+
+RUN apt update && apt -y install -no-install-recommends ca-certificates git git-lfs openssh-client curl jq cmake sqlite3 openssl psmisc python3
+RUN apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
+RUN npm install -g --no-update-notifier --no-fund yarn@${YARN_VERSION}
+
+RUN mkdir -p ~/.docker/cli-plugins/
+
+# Install Pack CLI
+RUN (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.27.0/pack-${PACK_VERSION}-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
