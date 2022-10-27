@@ -103,3 +103,34 @@ else
     || echo "nodejs installation failed."
 fi
 
+# Install pm2 globally
+if [ -x "$(command -v pm2)" ]; then
+    echo "pm2 is already installed. Please uninstall it and run this script again."
+    exit 1
+else
+    echo "Installing pm2..."
+    (yarn global add pm2)\
+    && echo "pm2 installed successfully."\
+    || echo "pm2 installation failed."
+fi
+
+# Install Traefik
+if [ -x "$(command -v traefik)" ]; then
+    echo "Traefik is already installed. Please uninstall it and run this script again."
+    exit 1
+else
+    echo "Installing Traefik..."
+    cd ~/traefik && \
+    mkdir -p data/configurations && \
+    touch data/traefik.yml && \
+    touch data/acme.json && \
+    touch data/configurations/dynamic.yml && \
+    chmod 600 data/acme.json
+    
+
+# Run paasify with pm2
+echo "Starting Paasify..."
+(cd ~/paasify && yarn build && pm2 start yarn --name "paasify-next-js" -- start)\
+    && echo "Paasify started successfully."\
+    || echo "Paasify failed to start."
+echo "Paasify is running on http://localhost:3000"
