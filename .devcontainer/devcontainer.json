@@ -19,7 +19,8 @@
 				"prisma.prisma",
 				"styled-components.vscode-styled-components",
 				"rangav.vscode-thunder-client",
-				"github.copilot"
+				"github.copilot",
+				"aaron-bond.better-comments"
 			]
 		}
 	},
