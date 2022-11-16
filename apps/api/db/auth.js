@@ -30,7 +30,7 @@ signup = async (req, res) => {
 }
 
 signin = async (req, res) => {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
         where: {
             email: req.body.email,
         },
