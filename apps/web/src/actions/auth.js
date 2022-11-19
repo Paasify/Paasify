@@ -6,10 +6,10 @@ import {
   LOGOUT,
   SET_MESSAGE,
 } from "./types";
-import { signup, loginEP, logoutEP } from "../utils/services/auth";
+import AuthService from "../services/auth";
 
 export const register = (username, email, password) => (dispatch) => {
-  return signup(username, email, password).then(
+  return AuthService.register(username, email, password).then(
     (response) => {
       dispatch({
         type: REGISTER_SUCCESS,
@@ -45,8 +45,14 @@ export const register = (username, email, password) => (dispatch) => {
 };
 
 export const login = (email, password) => (dispatch) => {
-  return loginEP(email, password).then(
+  // ! DEBUG LINE
+  console.log('Is this even running?');
+
+  return AuthService.login(email, password).then(
     (data) => {
+      // ! DEBUG LINE
+      console.log('Is this even running?')
+
       dispatch({
         type: LOGIN_SUCCESS,
         payload: { user: data },
@@ -77,7 +83,7 @@ export const login = (email, password) => (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
-  logoutEP();
+  AuthService.logout();
   
   dispatch({
     type: LOGOUT,

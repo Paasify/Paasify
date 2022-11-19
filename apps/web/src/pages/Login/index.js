@@ -13,7 +13,7 @@ function Login() {
     e.preventDefault();
 
     // ! DEBUG line
-    // console.log(email, password);
+    console.log('Email:', email, 'Password:', password);
     
     login(email, password);
   }
@@ -34,14 +34,12 @@ function Login() {
             placeholder="Email"
             type="email"
             onChange={e => setEmail(e.target.value)}
-            // onChange={(e) => onEmailChange(e)}
           />
           <Input
             name="password"
             placeholder="Password"
             type="password"
             onChange={e => setPassword(e.target.value)}
-            // onChange={(e) => onPasswordChange(e)}
           />
           <Button>Continue</Button>
         </LoginForm>
