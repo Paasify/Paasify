@@ -1,22 +1,49 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Helmet } from "react-helmet";
-import {login} from '../../actions/auth';
+import axios, { AxiosError } from "axios";
+import { useSignIn } from "react-auth-kit";
+import { useIsAuthenticated } from "react-auth-kit";
 
 function Login() {
+  // Check Auth
+  const isAuthenticated = useIsAuthenticated();
+  if (isAuthenticated()) {
+    window.location.href = "/";
+  }
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState();
+  const signIn = useSignIn();
 
-  // const loginUrl = `${process.env.REACT_APP_API_URL}/api/users/auth/login`;
-  
-  function handleSubmit(e) {
+  const loginUrl = `${process.env.REACT_APP_API_URL}/api/users/auth/login`;
+
+  const onSubmit = async (e) => {
     e.preventDefault();
-
-    // ! DEBUG line
-    console.log('Email:', email, 'Password:', password);
-    
-    login(email, password);
-  }
+    try {
+      const response = await axios.post(loginUrl, {
+        email,
+        password,
+      });
+      signIn({
+        token: response.data.accessToken,
+        expiresIn: (response.data.expiresIn/60) || 86400,
+        tokenType: "Bearer",
+        authState: {
+          email: response.data.email,
+          userName: response.data.userName,
+        },
+      });
+    } catch (err) {
+      if (err.response.data.message) {
+        setLoginError(err.response.data.message);
+      } else {
+        setLoginError("Something went wrong");
+      }
+      console.log(err.response.data.message);
+    }
+  };
   return (
     <>
       <LoginWrapper>
@@ -27,20 +54,23 @@ function Login() {
             content="initial-scale=1.0, width=device-width"
           />
         </Helmet>
-        <LoginForm method="post" onSubmit={handleSubmit}>
+        <LoginForm method="post" onSubmit={onSubmit}>
           <Title>Login to Paasify</Title>
           <Input
             name="email"
             placeholder="Email"
             type="email"
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
+            error={loginError}
           />
           <Input
             name="password"
             placeholder="Password"
             type="password"
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
+            error={loginError}
           />
+          {loginError && <LoginError>{loginError}</LoginError>}
           <Button>Continue</Button>
         </LoginForm>
       </LoginWrapper>
@@ -80,6 +110,13 @@ const Input = styled.input`
   font-size: 16px;
   padding: 16px 20px;
   border: 1px solid rgba(0, 0, 0, 0.2);
+  ${(props) => {
+    if (props.error) {
+      return `
+        border: 1px solid red;
+      `;
+    }
+  }}
   transition: 0.3s;
   outline: none;
   ::placeholder {
@@ -101,5 +138,9 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
 `;
+
+const LoginError = styled.p`
+  color: red;
+`
 
 export default Login;
