@@ -65,7 +65,8 @@ signin = async (req, res) => {
         id: user.id,
         userName: user.userName,
         email: user.email,
-        accessToken: token
+        accessToken: token,
+        expiresIn: 86400,
     });
 }
 
