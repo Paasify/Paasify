@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-export default function SpeedoMeter({ percent, current, total, type}) {
+export default function SpeedoMeter({ percent, current, total, type, arch}) {
     return (
         <SpeedoMeterWrapper>
             <h1>{type}</h1>
             <Percent>{percent}<span>%</span></Percent>
-            {type === "CPU" ? (<h1>{total} cores</h1>) : (<h1>{current} of {total} MB (~{Math.round(total*100/1024)/100} GB)</h1>)}
+            {type === "CPU" ? (<h1>{total} cores ({arch})</h1>) : (<h1>{current} of {total} MB (~{Math.round(total*100/1024)/100} GB)</h1>)}
         </SpeedoMeterWrapper>
     )
 }
