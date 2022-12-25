@@ -7,6 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('api:server');
 var http = require('http');
+const { Server } = require("socket.io");
+const jwt = require("jsonwebtoken");
+var os = require('os');
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +23,64 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000"
+  }
+});
+
+io.use((socket, next) => {
+  if (socket.handshake.auth && socket.handshake.auth.token && socket.handshake.auth.token.startsWith("Bearer ")) {
+    jwt.verify(socket.handshake.auth.token.substring(7, socket.handshake.auth.token.length), process.env.JWT_SECRET, (err, decoded) => {
+      console.log(socket.handshake.auth.token)
+      if (err) return next(new Error('Authentication Error'));
+      socket.decoded = decoded;
+      next();
+    })
+  }
+  else {
+    next(new Error('Authentication Error'))
+  }
+})
+.on("connection", (socket) => {
+    console.log("New client connected");
+    socket.on("disconnect", () => {
+        console.log("Client disconnected");
+    });
+});
+
+function sendServerUsage() {
+  // Calculate server usage data (e.g. CPU usage)
+  let cpu = os.loadavg();
+  let cpuArch = os.machine();
+  let processorCount = os.cpus().length;
+  let mem = {totalMem: os.totalmem()/1024/1024, freeMem: os.freemem()/1024/1024}
+  let usageData = {
+    cpuArch,
+    cpu,
+    processorCount,
+    mem
+  }
+  // Send the usage data to the client using Socket.io
+  io.emit('server usage', usageData);
+}
+setInterval(sendServerUsage, 2000);
+
+// function calculateServerUsage() {
+//   let cpu = os.cpus();
+//   for (var i = 0, len = cpu.length; i < len; i++) {
+//     var cpuTemp = cpu[i], total = 0;
+//     for (var type in cpuTemp.times) {
+//       total += cpuTemp.times[type];
+//     }
+//     for (type in cpu.times) {
+//       console.log("\t", type, Math.round(100 * cpu.times[type] / total)); 
+//     }
+//   }
+//   let mem = {totalMem: os.totalmem()/1024/1024, freeMem: os.freemem()}
+// }
+
+// setInterval(sendServerUsage, 5000);
 
 /**
  * Listen on provided port, on all network interfaces.
