@@ -16,7 +16,14 @@
 		"vscode": {
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"dbaeumer.vscode-eslint"
+				"dbaeumer.vscode-eslint",
+				"mongodb.mongodb-vscode",
+				"esbenp.prettier-vscode",
+				"prisma.prisma",
+				"styled-components.vscode-styled-components",
+				"rangav.vscode-thunder-client",
+				"github.copilot",
+				"aaron-bond.better-comments"
 			]
 		}
 	},
