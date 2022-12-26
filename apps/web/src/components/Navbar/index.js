@@ -41,6 +41,9 @@ const Left = styled.div`
   align-items: center;
   a {
     text-decoration: none;
+    :active {
+      color: black;
+    }
   }
 `;
 
