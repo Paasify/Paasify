@@ -17,7 +17,7 @@ export default function Dashboard() {
     const [serverUsage, setServerUsage] = useState();
     useEffect(() => {
         socket.on("connect", () => {
-            console.log(socket.id);
+            console.log('Socket ID:', socket.id);
         });
         socket.on("server usage", (usageData) => {
             setServerUsage(usageData)
@@ -27,7 +27,6 @@ export default function Dashboard() {
             socket.off("server usage")
         }
     }, [])
-    console.log(serverUsage)
     return (
         <DashboardWrapper>
             <Navbar />
@@ -42,7 +41,7 @@ export default function Dashboard() {
             <ContainerWrapper>
                 <DockerContainers>
                     <DockerTitle>Containers (Running)</DockerTitle>
-                    {serverUsage ? (
+                    {serverUsage ? (serverUsage.containersList.length > 0 ?
                     <table>
                         <tr>
                             <th>CONTAINER ID</th>
@@ -64,7 +63,7 @@ export default function Dashboard() {
                                 </>
                             )
                         })}
-                    </table>
+                    </table> : <h1>No containers running</h1>
                     ) : <h1>Loading...</h1>
                     }
                 </DockerContainers>
@@ -104,6 +103,9 @@ const DockerContainers = styled.div`
     gap: 1rem;
     flex-direction: column;
     align-items: center;
+    h1 {
+        margin-bottom: 2rem;
+    }
     table {
         width: 90%;
         margin-bottom: 2rem;
