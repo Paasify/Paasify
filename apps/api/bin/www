@@ -10,6 +10,7 @@ var http = require('http');
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 var os = require('os');
+var { listContainers } = require('../docker/index');
 
 /**
  * Get port from environment and store in Express.
@@ -49,15 +50,15 @@ io.use((socket, next) => {
     });
 });
 
-function sendServerUsage() {
+async function sendServerUsage() {
   // Calculate server usage data (e.g. CPU usage)
-  let cpu = os.loadavg();
-  let cpuArch = os.machine();
-  let processorCount = os.cpus().length;
+  let cpu = os.loadavg(), cpuArch = os.machine(), processorCount = os.cpus().length;
   let mem = {totalMem: os.totalmem()/1024/1024, freeMem: os.freemem()/1024/1024}
+  let containersList = await listContainers();
   let usageData = {
     cpuArch,
     cpu,
+    containersList,
     processorCount,
     mem
   }
