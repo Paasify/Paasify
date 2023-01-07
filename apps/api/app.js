@@ -7,14 +7,16 @@ var cors = require("cors");
 // var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
+var createRouter = require('./routes/create');
 
 var app = express();
 
 var corsOptions = {
+    credentials: true,
     origin: "http://localhost:3000"
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,5 +33,6 @@ app.all(function(req, res, next) {
 })
 app.use('/api/users/', usersRouter);
 app.use('/api/users/auth/', authRouter);
+app.use('/api/apps/', createRouter);
 
 module.exports = app;
