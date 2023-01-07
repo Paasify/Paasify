@@ -9,7 +9,7 @@
   "dependencies": {
     "@prisma/client": "^4.6.1",
     "bcrypt": "^5.1.0",
-    "cookie-parser": "~1.4.4",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dockerode": "^3.3.4",
