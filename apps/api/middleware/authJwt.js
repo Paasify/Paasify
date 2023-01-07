@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 verifyToken = (req, res, next) => {
-    let token = req.headers["x-access-token"];
+    let token = req.cookies._auth;
     if (!token) {
         return res.status(403).send({
             message: "No token provided!"
@@ -19,6 +19,7 @@ verifyToken = (req, res, next) => {
         req.userId = decoded.id;
         next();
     })
+    res.status(401).send({ message: "Wrong Token!" });
 }
 
 module.exports = { verifyToken }
