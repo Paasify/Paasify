@@ -33,7 +33,7 @@ const io = new Server(server, {
 io.use((socket, next) => {
   if (socket.handshake.auth && socket.handshake.auth.token && socket.handshake.auth.token.startsWith("Bearer ")) {
     jwt.verify(socket.handshake.auth.token.substring(7, socket.handshake.auth.token.length), process.env.JWT_SECRET, (err, decoded) => {
-      console.log(socket.handshake.auth.token)
+      // console.log(socket.handshake.auth.token)
       if (err) return next(new Error('Authentication Error'));
       socket.decoded = decoded;
       next();
