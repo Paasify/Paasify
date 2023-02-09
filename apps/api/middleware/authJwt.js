@@ -6,8 +6,8 @@ verifyToken = (req, res, next) => {
     let token = req.cookies._auth;
     console.log(token)
     if (!token) {
-        return res.status(403).send({
-            message: "No token provided!"
+        return res.status(401).send({
+            message: "Unauthorized access."
         });
     }
 
@@ -15,14 +15,14 @@ verifyToken = (req, res, next) => {
         console.log('decoded', decoded)
         if (err) {
             return res.status(401).send({
-                message: "Unauthorized!"
+                message: "Token is not valid!"
             });
         }
         req.userId = decoded.id;
         next();
     })
-    console.log("Token not valid!")
-    res.status(401).send({ message: "Wrong Token!" });
+    // console.log("Token not valid!")
+    // return res.status(401).send({ message: "Wrong Token!" });
 }
 
 module.exports = { verifyToken }
