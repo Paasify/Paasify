@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "JWT_SECRET=kdqgIoUoBb6TH7jPSqdaaUcsavDEZ16h  nodemon ./bin/www",
+    "dev": "JWT_SECRET=kdqgIoUoBb6TH7jPSqdaaUcsavDEZ16h nodemon ./bin/www",
     "start": "node ./bin/www"
   },
   "dependencies": {
     "@prisma/client": "^4.6.1",
     "bcrypt": "^5.1.0",
+    "bullmq": "^3.6.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
