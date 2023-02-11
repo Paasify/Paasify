@@ -10,8 +10,8 @@ router.post("/create", [authJwt.verifyToken], function (req, res, next) {
 
 /* POST Test useCredentials */
 router.post("/test", [authJwt.verifyToken], function (req, res, next) {
-    console.log(req.cookies._auth);
-    res.send({ message: "Added to queue!" });
+    console.log(req.userId);
+    res.status(200).send({ message: "Added to queue!" });
 })
 
 module.exports = router;
